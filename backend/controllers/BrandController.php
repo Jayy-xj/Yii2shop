@@ -147,24 +147,24 @@ class BrandController extends Controller
                 'enableCsrf' => true, // default
                 'postFieldName' => 'Filedata', // default
                 //BEGIN METHOD
-                'format' => [$this, 'methodName'],
+                //'format' => [$this, 'methodName'],
                 //END METHOD
                 //BEGIN CLOSURE BY-HASH
                 'overwriteIfExist' => true,
-                /*'format' => function (UploadAction $action) {
+                'format' => function (UploadAction $action) {
                     $fileext = $action->uploadfile->getExtension();
                     $filename = sha1_file($action->uploadfile->tempName);
                     return "{$filename}.{$fileext}";
-                },*/
+                },
                 //END CLOSURE BY-HASH
                 //BEGIN CLOSURE BY TIME
-                'format' => function (UploadAction $action) {
-                    $fileext = $action->uploadfile->getExtension();
-                    $filehash = sha1(uniqid() . time());
-                    $p1 = substr($filehash, 0, 2);
-                    $p2 = substr($filehash, 2, 2);
-                    return "{$p1}/{$p2}/{$filehash}.{$fileext}";
-                },
+//                'format' => function (UploadAction $action) {
+//                    $fileext = $action->uploadfile->getExtension();
+//                    $filehash = sha1(uniqid() . time());
+//                    $p1 = substr($filehash, 0, 2);
+//                    $p2 = substr($filehash, 2, 2);
+//                    return "{$p1}/{$p2}/{$filehash}.{$fileext}";
+//                },
                 //END CLOSURE BY TIME
                 'validateOptions' => [
                     'extensions' => ['jpg', 'png','gif'],
@@ -172,16 +172,18 @@ class BrandController extends Controller
                     'maxSize' => 1 * 1024 * 1024, //file size
                 ],
                 'beforeValidate' => function (UploadAction $action) {
-                    throw new Exception('test error');
+                    
                 },
                 'afterValidate' => function (UploadAction $action) {
-
+                    //throw new Exception('test error');
                 },
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
                     $imgUrl = $action->getWebUrl();
+
                     //调用七牛云组件，将图片上传到七牛云
                     $qiniu = \Yii::$app->qiniu;
+
                     $qiniu->uploadFile(\Yii::getAlias('@webroot').$imgUrl,$imgUrl);
                     //获取该图片在七牛云的地址
                     $url = $qiniu->getLink($imgUrl);
