@@ -7,6 +7,7 @@ $params = array_merge(
 );
 
 return [
+    'defaultRoute'=>'user',
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
@@ -17,7 +18,7 @@ return [
             'csrfParam' => '_csrf-backend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'backend\models\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
@@ -44,6 +45,14 @@ return [
             'rules' => [
             ],
         ],
+        'qiniu'=>[
+            'class'=>\backend\components\Qiniu::className(),
+            'up_host'=>'http://up-z2.qiniu.com',
+            'accessKey'=>'_j-U8uSg3jgfdUi3YES-BlBGZzfkxiaiKoEA91r2',
+            'secretKey'=>'lR5bzKi9rW_pZUamafKp43an6btdlF4FB15SzfhF',
+            'bucket'=>'yii2shop',
+            'domain'=>'http://or9otp24z.bkt.clouddn.com/',
+        ]
 
     ],
     'params' => $params,

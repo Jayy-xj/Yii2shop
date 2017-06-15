@@ -16,9 +16,8 @@ use Yii;
  */
 class Brand extends \yii\db\ActiveRecord
 {
-    //性别的选项
+    //状态的选项
     static public $statusOptions=[-1=>'删除',0=>'隐藏',1=>'显示'];
-    public $imgFile;
     /**
      * @inheritdoc
      */
@@ -37,7 +36,7 @@ class Brand extends \yii\db\ActiveRecord
             [['intro'], 'string'],
             [['sort', 'status'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            ['imgFile','file','extensions'=>['jpg','png','gif']],
+            [['logo'], 'string', 'max' => 255],
         ];
     }
 
@@ -50,7 +49,7 @@ class Brand extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => '名称',
             'intro' => '简介',
-            'imgFile' => 'LOGO',
+            'logo' => 'LOGO',
             'sort' => '排序号',
             'status' => '状态',
         ];
