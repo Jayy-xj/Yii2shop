@@ -4,7 +4,7 @@
 
 ?>
 
-    <h1>商品/列表</h1>
+    <h1>用户列表</h1>
 <?=\yii\bootstrap\Html::a('添加用户','create',['class'=>'btn btn-success'])?>
 
 <?= \yii\bootstrap\Html::endForm() ?>

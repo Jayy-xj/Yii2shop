@@ -4,7 +4,7 @@
 
 ?>
 
-    <h1>商品/列表</h1>
+    <h1>商品列表</h1>
 <?=\yii\bootstrap\Html::a('添加商品','create',['class'=>'btn btn-success'])?>
 <?= \yii\bootstrap\Html::beginForm(['goods/serch'], 'get', ['enctype' => 'multipart/form-data']) ?>
 <?= \yii\bootstrap\Html::textInput('data','',['placeholder'=>'名称、货号、id查询'])?>

@@ -14,19 +14,19 @@ class UserController extends \yii\web\Controller
     /*
      * 添加管理员
      */
-    public function actionInit()
-    {
-
-        $user = new User();
-        $user->username = 'admin';
-        $user->password = 'xj159286xj';
-//        $admin->email = 'admin@admin.com';
-        $user->auth_key = \Yii::$app->security->generateRandomString();
-        $user->save();
-        return $this->redirect(['admin/login']);
-        //注册完成后自动帮用户登录账号
-        //\Yii::$app->user->login($user);
-    }
+//    public function actionInit()
+//    {
+//
+//        $user = new User();
+//        $user->username = 'admin';
+//        $user->password_hash = 'xj159286xj';
+////        $admin->email = 'admin@admin.com';
+//        $user->auth_key = \Yii::$app->security->generateRandomString();
+//        $user->save();
+//        return $this->redirect(['admin/login']);
+//        //注册完成后自动帮用户登录账号
+//        //\Yii::$app->user->login($user);
+//    }
     public function actionIndex()
     {
         $query = User::find();
