@@ -172,7 +172,7 @@ class BrandController extends Controller
                     'maxSize' => 1 * 1024 * 1024, //file size
                 ],
                 'beforeValidate' => function (UploadAction $action) {
-                    
+
                 },
                 'afterValidate' => function (UploadAction $action) {
                     //throw new Exception('test error');
@@ -180,10 +180,8 @@ class BrandController extends Controller
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
                     $imgUrl = $action->getWebUrl();
-
                     //调用七牛云组件，将图片上传到七牛云
                     $qiniu = \Yii::$app->qiniu;
-
                     $qiniu->uploadFile(\Yii::getAlias('@webroot').$imgUrl,$imgUrl);
                     //获取该图片在七牛云的地址
                     $url = $qiniu->getLink($imgUrl);

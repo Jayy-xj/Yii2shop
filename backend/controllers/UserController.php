@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\LoginForm;
+use backend\models\RoleForm;
 use backend\models\User;
 use yii\data\Pagination;
 use yii\filters\VerbFilter;
@@ -42,15 +43,15 @@ class UserController extends \yii\web\Controller
     {
         $users = new User();
         if($users->load(\Yii::$app->request->post())){
-
             if($users->validate()){
                 $users->password_hash = \Yii::$app->getSecurity()->generatePasswordHash($users->password_hash);
                 $users->last_login_time=time();
                 $users->last_login_ip=\Yii::$app->request->userIP;
-                $users->save();
-                \Yii::$app->session->setFlash('success','用户添加成功');
-                \Yii::$app->user->login($users);
-                return $this->redirect(['user/index']);
+                if ($users->save()&& $users->addUser()){
+                    \Yii::$app->session->setFlash('success','用户添加成功');
+                    \Yii::$app->user->login($users);
+                    return $this->redirect(['user/index']);
+                }
             }
         }
         return $this->render('create',['users'=>$users]);
@@ -60,12 +61,14 @@ class UserController extends \yii\web\Controller
         if($users==null){
             throw new NotFoundHttpException('用户不存在');
         }
+        $users->loadData($id);
         if($users->load(\Yii::$app->request->post())){
             if($users->validate()){
                 $users->password_hash = \Yii::$app->getSecurity()->generatePasswordHash($users->newpassword);
-                $users->save();
-                \Yii::$app->session->setFlash('success','信息修改成功');
-                return $this->redirect(['user/index']);
+                if ($users->save()&& $users->updateUser($id)) {
+                    \Yii::$app->session->setFlash('success', '信息修改成功');
+                    return $this->redirect(['user/index']);
+                }
             }
         }
         return $this->render('update',['users'=>$users]);
@@ -137,6 +140,7 @@ class UserController extends \yii\web\Controller
             throw new NotFoundHttpException('用户不存在');
         }
         $users->delete();
+        \Yii::$app->authManager->revokeAll($id);
         \Yii::$app->session->setFlash('success','删除成功');
         return $this->redirect(['user/index']);
     }

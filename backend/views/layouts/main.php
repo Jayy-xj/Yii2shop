@@ -40,7 +40,9 @@ AppAsset::register($this);
         ['label' => '文章列表', 'url' => ['/article/index']],
         ['label'=>'商品分类列表','url'=>['/goods-category/index']],
         ['label'=>'商品列表','url'=>['/goods/index']],
-     ['label'=>'管理员列表','url'=>['/user/index']]
+     ['label'=>'管理员列表','url'=>['/user/index']],
+        ['label'=>'权限管理','url'=>['/rbac/index-permission']],
+        ['label'=>'角色管理','url'=>['/rbac/index-role']]
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '登录', 'url' => ['/user/login']];

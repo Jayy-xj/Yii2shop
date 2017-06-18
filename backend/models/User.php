@@ -3,6 +3,7 @@
 namespace backend\models;
 
 
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 use yii\web\NotFoundHttpException;
 
@@ -26,6 +27,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public $repassword;
     public $oldpassword;
     public $newpassword;
+    public $roles=[];
     /**
      * @inheritdoc
      */
@@ -45,6 +47,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             [['username', 'password_hash', 'password_reset_token', 'email', 'last_login_ip'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
+            ['roles','safe'],
 //            ['repassword', 'compare','compareAttribute'=>'password_hash'],
             [['password_reset_token'], 'unique'],
             ['oldpassword', 'validateCheck'],
@@ -60,6 +63,34 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             if(!$pw){
                 $this->addError('oldpassword','旧密码不正确');
             }
+    }
+    public static function  getRoleOption(){
+        $role=\Yii::$app->authManager->getRoles();
+        return ArrayHelper::map($role,'name','description');
+    }
+    public function addUser(){
+        $authManager=\Yii::$app->authManager;
+                foreach ($this->roles as $roleName){
+                    $role=$authManager->getRole($roleName);
+                    if ($roleName){
+                        $authManager->assign($role,$this->id);
+                    }
+                    return true;
+                }
+    }
+    public function updateUser($id){
+                \Yii::$app->authManager->revokeAll($id);
+                foreach ($this->roles as $roleName){
+                    $role=\Yii::$app->authManager->getRole($roleName);
+                    if ($roleName){
+                        \Yii::$app->authManager->assign($role,$this->id);
+                    }
+                    return true;
+                }
+    }
+    public function loadData($id){
+        $this->roles=ArrayHelper::map( \Yii::$app->authManager->getRolesByUser($id),'name','name');
+
     }
     /**
      * @inheritdoc
