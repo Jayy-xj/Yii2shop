@@ -92,9 +92,9 @@ class UserController extends \yii\web\Controller
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
+//                'actions' => [
+//                    'logout' => ['post'],
+//                ],
             ],
         ];
     }

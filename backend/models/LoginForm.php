@@ -11,6 +11,8 @@ class LoginForm extends Model{
     {
         return [
             [['username','password_hash'],'required'],
+//            ['rememberMe','boolean']
+            ['rememberMe','safe']
         ];
     }
 
@@ -33,7 +35,7 @@ class LoginForm extends Model{
                    $user->last_login_ip=\Yii::$app->request->userIP;
                    $user->auth_key = \Yii::$app->security->generateRandomString();
                    $user->save(false);
-                   \Yii::$app->user->login($user,$this->rememberMe?3600:0);
+                   \Yii::$app->user->login($user,$this->rememberMe?3600*24*7:0);
                    return true;
                }else{
                    $this->addError('password_hash','密码不正确');

@@ -27,40 +27,7 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
-    NavBar::begin([
-        'brandLabel' => '商城后台',
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    $menuItems = [
-        ['label' => '品牌列表', 'url' => ['/brand/index']],
-        ['label' => '文章分类列表', 'url' => ['/article-category/index']],
-        ['label' => '文章列表', 'url' => ['/article/index']],
-        ['label'=>'商品分类列表','url'=>['/goods-category/index']],
-        ['label'=>'商品列表','url'=>['/goods/index']],
-     ['label'=>'管理员列表','url'=>['/user/index']],
-        ['label'=>'权限管理','url'=>['/rbac/index-permission']],
-        ['label'=>'角色管理','url'=>['/rbac/index-role']]
-    ];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => '登录', 'url' => ['/user/login']];
-    } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/user/logout'], 'post')
-            . Html::submitButton(
-                '注销当前用户： (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-    }
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => $menuItems,
-    ]);
-    NavBar::end();
+    echo \backend\widgets\MenuWidget::widget();
     ?>
 
     <div class="container">

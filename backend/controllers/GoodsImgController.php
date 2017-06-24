@@ -18,6 +18,12 @@ class GoodsImgController extends \yii\web\Controller
         $goods_imgs = $query->limit($pager->limit)->offset($pager->offset)->all();
         return $this->render('index',['goods_imgs'=>$goods_imgs,'pager'=>$pager,'goods_id'=>$goods_id]);
     }
+    public function actionDelete($id,$goods_id){
+        $query = GoodsImg::findOne($id);
+        $query->delete();
+        \Yii::$app->session->setFlash('success','图片删除成功');
+        return $this->redirect(['goods-img/index','goods_id'=>$goods_id]);
+    }
     public function actionCreate($goods_id)
     {
         $goods_imgs = new GoodsImg();

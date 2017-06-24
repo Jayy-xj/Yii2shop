@@ -2,6 +2,7 @@
 namespace backend\controllers;
 use backend\models\PermissionForm;
 use backend\models\RoleForm;
+use yii\data\Pagination;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 

@@ -11,12 +11,13 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'defaultRoute' =>'goods/index',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'frontend\models\Member',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -33,6 +34,7 @@ return [
                 ],
             ],
         ],
+
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
@@ -40,9 +42,18 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'suffix'=>'.html',
             'rules' => [
             ],
         ],
+        //配置短信组件
+        'sms'=>[
+            'class'=>\frontend\components\Sms::className(),
+            'app_key'=>'24480023',
+            'app_secret'=>'c714f3602fc06c6f5f892067bd051fa4',
+            'sign_name'=>'向杰商城网站验证',
+            'template_code'=>'SMS_71505183',
+        ]
 
     ],
     'params' => $params,

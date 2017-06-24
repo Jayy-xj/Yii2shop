@@ -18,7 +18,7 @@
                 <td><?=$goods_img->id?></td>
                 <td><?=\yii\bootstrap\Html::img($goods_img->path,['height'=>20])?></td>
                 <td>
-                    <?=\yii\bootstrap\Html::a('删除',['goods-img/delete','id'=>$goods_img->id],['class'=>'btn btn-danger'])?>
+                    <?=\yii\bootstrap\Html::a('删除',['goods-img/delete','id'=>$goods_img->id,'goods_id'=>$goods_id],['class'=>'btn btn-danger'])?>
                 </td>
             </tr>
         <?php endforeach;?>
