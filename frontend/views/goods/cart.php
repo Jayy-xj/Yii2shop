@@ -1,3 +1,18 @@
+<!-- 页面头部 start -->
+<div class="header w990 bc mt15">
+    <div class="logo w990">
+        <h2 class="fl"><a href="index.html"><img src="/images/logo.png" alt="京西商城"></a></h2>
+        <div class="flow fr">
+            <ul>
+                <li class="cur">1.我的购物车</li>
+                <li>2.填写核对订单信息</li>
+                <li>3.成功提交订单</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 页面头部 end -->
+<div style="clear:both;"></div>
 <!-- 主体部分 start -->
 <div class="mycart w990 mt10 bc">
     <h2><span>我的购物车</span></h2>
@@ -12,6 +27,7 @@
         </tr>
         </thead>
         <tbody>
+        <?php  $total=null?>
         <?php foreach($models as $model):?>
             <tr data-goods_id="<?=$model['id']?>">
                 <td class="col1"><a href=""><?=\yii\helpers\Html::img('http://admin.yii2shop.com/'.$model['logo'])?></a>  <strong><a href=""><?=$model['name']?></a></strong></td>
@@ -24,19 +40,20 @@
                 <td class="col5">￥<span><?=($model['shop_price']*$model['amount'])?></span></td>
                 <td class="col6"><a href="javascript:;" class="del_goods">删除</a></td>
             </tr>
+            <?php $total+=($model['shop_price']*$model['amount'])?>
         <?php endforeach;?>
 
 
         </tbody>
         <tfoot>
         <tr>
-            <td colspan="6">购物金额总计： <strong>￥ <span id="total"></span></strong></td>
+            <td colspan="6">购物金额总计： <strong>￥ <?=$total?></strong></td>
         </tr>
         </tfoot>
     </table>
     <div class="cart_btn w990 bc mt10">
         <a href="" class="continue">继续购物</a>
-        <a href="" class="checkout">结 算</a>
+        <a href="<?=\yii\helpers\Url::to(['order/order'])?>" class="checkout">结 算</a>
     </div>
 </div>
 <!-- 主体部分 end -->

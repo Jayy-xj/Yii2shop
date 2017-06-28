@@ -2,12 +2,15 @@
 
 namespace frontend\controllers;
 
+use frontend\models\Cart;
 use frontend\models\LoginForm;
 use frontend\models\Member;
 use Flc\Alidayu\Client;
 use Flc\Alidayu\App;
 use Flc\Alidayu\Requests\AlibabaAliqinFcSmsNumSend;
 use Flc\Alidayu\Requests\IRequest;
+use yii\web\User;
+
 class MemberController extends \yii\web\Controller
 {
     public $layout = 'login';
@@ -34,9 +37,42 @@ class MemberController extends \yii\web\Controller
     public function actionLogin(){
         $model = new LoginForm();
         if ($model->load(\Yii::$app->request->post()) && $model->login()) {
+            //登录成功，操作数据库同步数据
+            //先获取cookie中的购物车数据
+            $cookies = \Yii::$app->request->cookies;
+            $cookie = $cookies->get('cart');
+            if($cookie == null){
+                //cookie中没有数据
+                $cart = [];
+            }else{
+                //如果有数据就反序列化
+                $cart = unserialize($cookie->value);
+            }
+            $model2=new Cart();
+            $member_id=\Yii::$app->user->id;
+            foreach ($cart as $k=>$cartChild){
+//                echo '数量:'.$k;
+                $oldgoods=$model2::find()->where(['goods_id'=>$k,'member_id'=>$member_id])->one();
+                if ($oldgoods){
+                    $oldgoods->amount=$oldgoods->amount+$cartChild;
+                    $oldgoods->save();
+                }else{
+                    $model2->amount=$cartChild;
+                    $model2->goods_id=$k;
+                    $model2->member_id=$member_id;
+                    if(!$model2->isNewRecord){
+                        $model2->isNewRecord=true;
+                        $model2->id=null;
+                    }
+                    $model2->save();
+                }
+            }
+            \Yii::$app->response->getCookies()->remove($cookie);
+            //同步完成
             \Yii::$app->session->setFlash('success','登录成功');
-            return $this->redirect(['goods/index']);
+            return $this->goBack();
         } else {
+            \Yii::$app->user->setReturnUrl(\Yii::$app->request->referrer);
             return $this->render('login', [
                 'model' => $model,
             ]);
@@ -46,7 +82,7 @@ class MemberController extends \yii\web\Controller
     {
         \Yii::$app->user->logout();
         \Yii::$app->session->setFlash('success','注销成功');
-        return $this->redirect(['layout/index']);
+        return $this->redirect(['goods/index']);
     }
     public function actionSendSms()
     {

@@ -36,6 +36,7 @@ class LoginForm extends Model{
                     $member->auth_key = \Yii::$app->security->generateRandomString();
                     $member->save(false);
                     \Yii::$app->user->login($member,$this->rememberMe?3600*24*7:0);
+
                     return true;
                 }else{
                     $this->addError('password','密码不正确');

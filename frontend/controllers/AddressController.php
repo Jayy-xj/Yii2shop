@@ -13,12 +13,14 @@ class AddressController extends \yii\web\Controller
     }
     public function actionAdd()
     {
+        $member_id=\Yii::$app->user->id;
         $model = new Address();
-        $queres = Address::find()->all();
+        $queres = Address::find()->where(['member_id'=>$member_id])->all();
         if($model->load(\Yii::$app->request->post())){
             if($model->validate()){
                 $model->status=0;
                 $model->created_at=time();
+                $model->member_id=$member_id;
                 if ($model->save()){
                     \Yii::$app->session->setFlash('success','添加成功');
                     return $this->redirect(['address/add']);
@@ -29,7 +31,8 @@ class AddressController extends \yii\web\Controller
     }
     public function actionEdit($id)
     {
-        $queres = Address::find()->all();
+        $member_id=\Yii::$app->user->id;
+        $queres = Address::find()->where(['member_id'=>$member_id])->all();
         $model =Address::findOne(['id'=>$id]);
         if($model->load(\Yii::$app->request->post())){
             if($model->validate()){
@@ -44,14 +47,20 @@ class AddressController extends \yii\web\Controller
     }
     public function actionDelete($id)
     {
-
-        $model =Address::findOne(['id'=>$id]);
+        $member_id=\Yii::$app->user->id;
+        $model =Address::find()->where(['id'=>$id,'member_id'=>$member_id])->one();
         $model->delete();
         return $this->redirect('add.html');
     }
     public function actionDefault($id)
     {
-        $model =Address::findOne(['id'=>$id]);
+        $member_id=\Yii::$app->user->id;
+        $models=Address::find()->where(['member_id'=>$member_id])->all();
+        foreach ($models as $v){
+            $v->status=0;
+            $v->save();
+        }
+        $model =Address::find()->where(['id'=>$id,'member_id'=>$member_id])->one();
         $model->status=1;
         $model->save();
         return $this->redirect('add.html');

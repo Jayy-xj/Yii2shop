@@ -12,6 +12,7 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'defaultRoute' =>'goods/index',
+
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',

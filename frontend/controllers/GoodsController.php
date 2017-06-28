@@ -65,7 +65,7 @@ class GoodsController extends \yii\web\Controller
         $amount = Yii::$app->request->post('amount');
         $goods = Goods::findOne(['id'=>$goods_id]);
         if($goods==null){
-            throw new NotFoundHttpException('商品不存在');
+            throw new NotFoundHttpException('商品不存在1');
         }
             //未登录和登录
             //先获取cookie中的购物车数据
@@ -94,13 +94,12 @@ class GoodsController extends \yii\web\Controller
             $cookies->add($cookie);
         }else{
             //已登录
-//            var_dump($cart);exit;
             //操作数据库
             $model=new Cart();
             $member_id=Yii::$app->user->id;
             foreach ($cart as $k=>$cartChild){
 //                echo '数量:'.$k;
-                $oldgoods=$model::findOne(['goods_id'=>$k]);
+                $oldgoods=$model::find()->where(['goods_id'=>$k,'member_id'=>$member_id])->one();
                 if ($oldgoods){
                     $oldgoods->amount=$oldgoods->amount+$cartChild;
                     $oldgoods->save();
@@ -141,18 +140,17 @@ class GoodsController extends \yii\web\Controller
             }
         }else{
             //不是游客
-            $model=new Cart();
-            $member_id=Yii::$app->user->id;
-            $carts=$model::find()->where(['member_id'=>$member_id])->asArray()->all();
-            $models = [];
-            foreach ($carts as $cart){
+                $model=new Cart();
+                $member_id=Yii::$app->user->id;
+                $carts=$model::find()->where(['member_id'=>$member_id])->asArray()->all();
+                $models = [];
+                foreach ($carts as $cart){
 //                var_dump($cart['id']);
-                $cart_id=$cart['goods_id'];
-                $goods = Goods::findOne(['id' => $cart_id])->attributes;
-                $goods['amount'] = $cart['amount'];
-                $models[] = $goods;
-            }
-            //从数据库获取购物车数据
+                    $cart_id=$cart['goods_id'];
+                    $goods = Goods::findOne(['id' => $cart_id])->attributes;
+                    $goods['amount'] = $cart['amount'];
+                    $models[] = $goods;
+                }
         }
         return $this->render('cart', ['models' => $models]);
     }
@@ -188,16 +186,17 @@ class GoodsController extends \yii\web\Controller
             ]);
             $cookies->add($cookie);
         }else{
+            $member_id=Yii::$app->user->id;
 //            已经登录
             if ($amount==0){
-                $removegoods=Cart::findOne(['goods_id'=>$goods_id]);
+                $removegoods=Cart::find()->where(['goods_id'=>$goods_id,'member_id'=>$member_id])->one();
                 if ($removegoods==null){
                     throw new NotFoundHttpException('商品不存在');
                 }else{
                     $removegoods->delete();
                 }
             }else{
-                $editgoods=Cart::findOne(['goods_id'=>$goods_id]);
+                $editgoods=Cart::find()->where(['goods_id'=>$goods_id,'member_id'=>$member_id])->one();
                 if ( $editgoods==null){
                     throw new NotFoundHttpException('商品不存在');
                 }else{

@@ -13,6 +13,10 @@ use yii\helpers\ArrayHelper;
  * @property string $tel
  * @property integer $status
  * @property integer $created_at
+ * @property integer $province
+ * @property integer $city
+ * @property integer $district
+ * @property integer $detail
  */
 class Address extends \yii\db\ActiveRecord
 {
@@ -52,7 +56,10 @@ class Address extends \yii\db\ActiveRecord
             'created_at' => '添加时间',
             'detail' => '详细地址',
             'defaultMe' => '设为默认地址',
-            'district' => '所在地区',
+            'district' => '区',
+            'province' => '省',
+            'city' => '市',
+            'member_id'=>'用户ID',
         ];
     }
 
