@@ -18,15 +18,19 @@ class MemberController extends \yii\web\Controller
     public function actionRegister()
     {
         $model = new Member();
+        $model->scenario='register';
         if($model->load(\Yii::$app->request->post())){
             if($model->validate()){
-                $model->password_hash = \Yii::$app->getSecurity()->generatePasswordHash($model->password);
+//                var_dump($model->checkpassword);exit;
+                $model->password_hash = \Yii::$app->security->generatePasswordHash($model->password);
+//                var_dump($model->password_hash);exit;
                 $model->last_login_time=time();
                 $model->created_at=time();
-                $model->status=1;
+                $model->status = 1;
                 $model->last_login_ip=\Yii::$app->request->userIP;
-                if ($model->save()){
-                    \Yii::$app->session->setFlash('success','用户注册成功');
+                if ($model->save(false)){
+                    \Yii::$app->session->set('password_hash2',$model->password_hash);
+                    //\Yii::$app->session->setFlash('success','用户注册成功');
                     return $this->redirect(['goods/index']);
                 }
             }

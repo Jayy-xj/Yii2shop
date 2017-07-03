@@ -2,34 +2,43 @@
 
 namespace backend\controllers;
 
+use backend\components\SphinxClient;
 use backend\models\Goods;
 use backend\models\GoodsDayCount;
 use backend\models\GoodsIntro;
+use backend\models\GoodsSearchForm;
 use xj\uploadify\UploadAction;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 class GoodsController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-            $query = Goods::find();
-            $pager = new Pagination([
-                'totalCount'=>$query->count(),
-                'pageSize'=>2
-            ]);
-            $goods = $query->limit($pager->limit)->offset($pager->offset)->all();
-            return $this->render('index',['goods'=>$goods,'pager'=>$pager]);
-    }
-    public function actionSerch($data)
-    {
-        $query = Goods::find()->andFilterWhere(['like', 'name', $data])->orFilterWhere(['like', 'sn', $data])->orFilterWhere(['like', 'id', $data]);
+        $model = new GoodsSearchForm();
+        $query = Goods::find();
+        if($keyword = \Yii::$app->request->get('keyword')){
+            $cl = new SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_ALL);
+            $cl->SetLimits(0, 1000);
+            $res = $cl->Query($keyword, 'goods');
+            if(!isset($res['matches'])){
+                $query->where(['id'=>0]);
+            }else{
+                $ids = ArrayHelper::map($res['matches'],'id','id');
+                $query->where(['in','id',$ids]);
+            }
+        }
         $pager = new Pagination([
             'totalCount'=>$query->count(),
-            'pageSize'=>2
+            'pageSize'=>5
         ]);
-        $goods = $query->limit($pager->limit)->offset($pager->offset)->all();
-        return $this->render('index',['goods'=>$goods,'pager'=>$pager]);
+        $models = $query->limit($pager->limit)->offset($pager->offset)->all();
+        return $this->render('index',['models'=>$models,'pager'=>$pager,'model'=>$model]);
     }
     public function actionCreate()
     {
@@ -140,6 +149,17 @@ class GoodsController extends \yii\web\Controller
                 },
             ],
         ];
+    }
+    public function actionTest(){
+        $cl = new SphinxClient();
+        $cl->SetServer ( '127.0.0.1', 9312);
+        $cl->SetConnectTimeout ( 10 );
+        $cl->SetArrayResult ( true );
+        $cl->SetMatchMode ( SPH_MATCH_ALL);
+        $cl->SetLimits(0, 1000);
+        $info = '联想';//需要搜索的词
+        $res = $cl->Query($info, 'goods');
+        var_dump($res);
     }
 
 }

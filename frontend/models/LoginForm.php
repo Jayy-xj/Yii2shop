@@ -12,6 +12,7 @@ class LoginForm extends Model{
     {
         return [
             [['username','password','code'],'required'],
+            [['code'],'captcha','captchaAction'=>'site/captcha'],
         ];
     }
 
@@ -27,16 +28,16 @@ class LoginForm extends Model{
     public function login()
     {
         if($this->validate()){
+//            var_dump($this->username);exit;
             $member = Member::findOne(['username'=>$this->username]);
             if($member){
                 //用户存在 验证密码
-                if(\Yii::$app->getSecurity()->validatePassword($this->password,$member->password_hash)){
+                if(\Yii::$app->security->validatePassword($this->password,$member->password_hash)){
                     $member->last_login_time=time();
                     $member->last_login_ip=\Yii::$app->request->userIP;
                     $member->auth_key = \Yii::$app->security->generateRandomString();
                     $member->save(false);
                     \Yii::$app->user->login($member,$this->rememberMe?3600*24*7:0);
-
                     return true;
                 }else{
                     $this->addError('password','密码不正确');

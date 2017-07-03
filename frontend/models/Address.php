@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $city
  * @property integer $district
  * @property integer $detail
+ * @property integer $member_id
  */
 class Address extends \yii\db\ActiveRecord
 {
@@ -35,11 +36,11 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username'], 'required'],
+            [['username','tel','status','detail','district','province','city'], 'required'],
             [['status', 'created_at'], 'integer'],
             [['username'], 'string', 'max' => 50],
             [['tel'], 'string', 'max' => 11],
-            [['province','city','district','detail'],'safe']
+//            [['province','city','district','detail'],'safe']
         ];
     }
 

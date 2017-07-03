@@ -27,6 +27,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public $password;//密码明文
     public $checkpassword;//确认密码
+    public $oldpassword;//旧密码
     public $code;//验证码
     public $mes;//用户协议
     public $smsCode;//短信验证码
@@ -41,15 +42,15 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username','email','tel'], 'required'],
+            [['username','email','tel','checkpassword','password'], 'required','on'=>'register'],
             [['username'], 'string', 'max' => 50],
             [['email'], 'email', 'message'=>'邮箱格式不正确'],
-            [['password','checkpassword','smsCode'], 'required','on'=>self::SCENARIO_REGISTER],
-            ['code','captcha','on'=>self::SCENARIO_REGISTER],
+            [['password','checkpassword'], 'required','on'=>'register'],
+            [['code'],'captcha','captchaAction'=>'site/captcha','on' => ['register','login']],
             ['tel','match','pattern'=>'/^1[34578]\d{9}$/','message'=>'电话号码格式不正确'],
-            ['checkpassword', 'compare','compareAttribute'=>'password','message'=>'两次密码不一致','on'=>self::SCENARIO_REGISTER],
+            ['checkpassword', 'compare','compareAttribute'=>'password','message'=>'两次密码不一致','on'=>'register'],
             //验证短信验证码
-            ['smsCode','validateSms','on'=>self::SCENARIO_REGISTER],
+            ['smsCode','validateSms','on'=>'register'],
         ];
     }
     //验证短信验证码
@@ -65,7 +66,13 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
-    const SCENARIO_REGISTER = 'register';
+    public function scenarios()
+    {
+        return [
+            'register' => ['username', 'email', 'tel','code','checkpassword','password', 'smsCode'],
+           'login' => ['code'],
+        ];
+    }
     public function attributeLabels()
     {
         return [

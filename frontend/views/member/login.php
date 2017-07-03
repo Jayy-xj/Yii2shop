@@ -22,7 +22,7 @@
             echo $form->field($model,'username')->textInput(['class'=>'txt']);//用户名
             echo $form->field($model,'password')->passwordInput(['class'=>'txt']);//密码
             //验证码
-            echo $form->field($model,'code',['options'=>['class'=>'checkcode']])->widget(\yii\captcha\Captcha::className(),['template'=>'{input}{image}']);
+            echo $form->field($model,'code',['options'=>['class'=>'checkcode']])->widget(\yii\captcha\Captcha::className(),['captchaAction'=>'site/captcha','template'=>'{input}{image}']);
             echo $form->field($model, 'rememberMe')->checkbox();
             echo '<li>
                         <label for="">&nbsp;</label>

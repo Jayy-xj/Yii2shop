@@ -123,7 +123,7 @@
 <div class="list w1210 bc mt10">
     <!-- 面包屑导航 start -->
     <div class="breadcrumb">
-        <h2>当前位置：<a href="">首页</a> > <a href=""><?=$cate->name?></a></h2>
+        <h2>当前位置：<a href="">首页</a> > <a href=""></a></h2>
     </div>
     <!-- 面包屑导航 end -->
 
@@ -131,18 +131,9 @@
     <div class="list_left fl mt10">
         <!-- 分类列表 start -->
         <div class="catlist">
-            <h2><?=$cate->name?></h2>
+            <h2></h2>
             <div class="catlist_wrap">
-            <?php foreach ($categories as $k=>$category):?>
-                <div class="child">
-                    <h3 class="on"><b></b><?=$category->name?></h3>
-                    <ul>
-                        <?php foreach ($category->children as $k2=>$child):?>
-                        <li><a href=""><?=$child->name?></a></li>
-                        <?php endforeach;?>
-                    </ul>
-                </div>
-                <?php endforeach;?>
+
 
             </div>
 
@@ -350,18 +341,16 @@
         <!-- 商品列表 start-->
         <div class="goodslist mt10">
             <ul>
-                <?php foreach ($goods as $goods2):?>
-                    <?php foreach ($goods2 as $good):?>
-                <li>
-                    <dl>
-                        <dt><a href=""><img src="<?='http://admin.yii2shop.com'.$good['logo']?>" alt="" /></a></dt>
-                        <dd><?=\yii\bootstrap\Html::a($good['name'],['goods/view','goods_id'=>$good['id']])?></dd>
-                        <dd><strong><?=$good['shop_price']?></strong></dd>
-                        <dd><a href=""><em>已有10人评价</em></a></dd>
-                    </dl>
-                </li>
+                    <?php foreach ($goods as $good):?>
+                        <li>
+                            <dl>
+                                <dt><a href=""><img src="<?='http://admin.yii2shop.com'.$good['logo']?>" alt="" /></a></dt>
+                                <dd><?=\yii\bootstrap\Html::a($good['name'],['goods/view','goods_id'=>$good['id']])?></dd>
+                                <dd><strong><?=$good['shop_price']?></strong></dd>
+                                <dd><a href=""><em>已有10人评价</em></a></dd>
+                            </dl>
+                        </li>
                     <?php endforeach;?>
-                <?php endforeach;?>
             </ul>
         </div>
         <!-- 商品列表 end-->

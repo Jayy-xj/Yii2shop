@@ -30,7 +30,7 @@ use yii\helpers\Html;
             $button =  Html::button('发送短信验证码',['id'=>'send_sms_button']);
             echo $form->field($model,'smsCode',['options'=>['class'=>'checkcode'],'template'=>"{label}\n{input}$button\n{hint}\n{error}"])->textInput(['class'=>'txt']);
             //验证码
-            echo $form->field($model,'code',['options'=>['class'=>'checkcode']])->widget(\yii\captcha\Captcha::className(),['template'=>'{input}{image}']);
+            echo $form->field($model,'code',['options'=>['class'=>'checkcode']])->widget(\yii\captcha\Captcha::className(),['captchaAction'=>'site/captcha','template'=>'{input}{image}']);
             echo '<li>
                         <label for="">&nbsp;</label>
                         <input type="checkbox" value="" class="chb">我已阅读并同意《用户注册协议》

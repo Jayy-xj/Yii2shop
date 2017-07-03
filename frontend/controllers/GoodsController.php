@@ -2,11 +2,14 @@
 
 namespace frontend\controllers;
 
+use backend\components\SphinxClient;
 use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsIntro;
+use backend\models\GoodsSearchForm;
 use frontend\models\Cart;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\Cookie;
 use yii\web\NotFoundHttpException;
 
@@ -38,6 +41,28 @@ class GoodsController extends \yii\web\Controller
             $goods[]=Goods::find()->where(['goods_category_id'=>$goods_category_id])->all();
         }
         return $this->render('list',['categories'=>$categories,'cate'=>$cate,'goods'=>$goods]);
+    }
+
+    public function actionSearch()
+    {
+        $query = Goods::find();
+        if($keyword = \Yii::$app->request->get('keyword')){
+            $cl = new SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_ALL);
+            $cl->SetLimits(0, 1000);
+            $res = $cl->Query($keyword, 'goods');
+            if(!isset($res['matches'])){
+                $query->where(['id'=>0]);
+            }else{
+                $ids = ArrayHelper::map($res['matches'],'id','id');
+                $query->where(['in','id',$ids]);
+            }
+        }
+        $goods = $query->all();
+        return $this->render('search',['goods'=>$goods]);
     }
 
     public function actionGoods(){
